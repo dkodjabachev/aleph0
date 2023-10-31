@@ -1,2 +1,1 @@
-# aleph0
-A simple mathematical library
+### $\aleph_0$ -- A simple mathematical library ###
