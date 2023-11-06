@@ -1,10 +1,12 @@
 #pragma once
 
-#include <assert.h>
+// Standard C++ library headers
+#include <cassert>
 #include <string>
 
 namespace aleph0
 {
+
 class Vector2d
 {
 public:
@@ -46,7 +48,6 @@ public:
 		return coordinates_[index];
 	}
 
-public:
 	///////////////////////////////////////////////////////////////////////////////
 	Vector2d operator+(const Vector2d& other) const
 	{
@@ -120,7 +121,13 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
-	operator std::string() const
+	float ScalarProduct(const Vector2d& other) const
+	{
+		return coordinates_[0] * other[0] + coordinates_[1] * other[1];
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	std::string ToString() const
 	{
 		std::string result =
 			"(" +

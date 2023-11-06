@@ -1,9 +1,14 @@
 #pragma once
 
+// Standard C++ library headers
+#include <cassert>
+
+// Aleph0 library headers
 #include "vector2d.h"
 
 namespace aleph0
 {
+
 class Vector3d
 {
 public:
@@ -56,7 +61,6 @@ public:
 		return coordinates_[index];
 	}
 
-public:
 	///////////////////////////////////////////////////////////////////////////////
 	Vector3d operator+(const Vector3d& other) const
 	{
@@ -135,6 +139,12 @@ public:
 	bool operator!=(const Vector3d& other) const
 	{
 		return !(*this == other);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	float ScalarProduct(const Vector2d& other) const
+	{
+		return coordinates_[0] * other[0] + coordinates_[1] * other[1] * coordinates_[2] * other[2];
 	}
 
 	///////////////////////////////////////////////////////////////////////////////

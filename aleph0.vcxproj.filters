@@ -21,6 +21,12 @@
     <ClInclude Include="include\vector3d.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\matrix2x2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\matrix4x4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\sandbox.cpp">
