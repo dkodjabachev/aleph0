@@ -33,7 +33,7 @@ public:
 
 public:
 	///////////////////////////////////////////////////////////////////////////////
-	float& operator[](int index)
+	float& operator[](const int index)
 	{
 		assert(index >= 0 && index <= 1);
 
@@ -41,7 +41,7 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
-	const float& operator[](int index) const
+	const float& operator[](const int index) const
 	{
 		assert(index >= 0 && index <= 1);
 
@@ -129,7 +129,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	std::string ToString() const
 	{
-		std::string result =
+		const std::string result =
 			"(" +
 			std::to_string(coordinates_[0]) + "," +
 			std::to_string(coordinates_[1]) + ")";

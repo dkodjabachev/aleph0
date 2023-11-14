@@ -72,17 +72,17 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
-	const float* operator[](const size_t row_index) const
+	const float* operator[](const int row_index) const
 	{
-		assert(row_index < 4);
+		assert(row_index >= 0 && row_index < 4);
 
 		return data_.array_[row_index];
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
-	float* operator[](const size_t row_index)
+	float* operator[](const int row_index)
 	{
-		assert(row_index < 4);
+		assert(row_index >= 0 && row_index < 4);
 
 		return data_.array_[row_index];
 	}

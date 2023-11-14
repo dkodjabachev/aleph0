@@ -46,7 +46,7 @@ public:
 
 public:
 	///////////////////////////////////////////////////////////////////////////////
-	float& operator[](int index)
+	float& operator[](const int index)
 	{
 		assert(index >= 0 && index <= 2);
 
@@ -54,7 +54,7 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
-	const float& operator[](int index) const
+	const float& operator[](const int index) const
 	{
 		assert(index >= 0 && index <= 2);
 
@@ -144,13 +144,13 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	float ScalarProduct(const Vector2d& other) const
 	{
-		return coordinates_[0] * other[0] + coordinates_[1] * other[1] * coordinates_[2] * other[2];
+		return coordinates_[0] * other[0] + coordinates_[1] * other[1] + coordinates_[2] * other[2];
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
 	std::string ToString() const
 	{
-		std::string result =
+		const std::string result =
 			"(" +
 			std::to_string(coordinates_[0]) + "," +
 			std::to_string(coordinates_[1]) + "," +

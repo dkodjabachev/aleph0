@@ -53,17 +53,17 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
-	const float* operator[](const size_t row_index) const
+	const float* operator[](const int row_index) const
 	{
-		assert(row_index < 2);
+		assert(row_index >= 0 && row_index < 2);
 
 		return data_.array_[row_index];
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
-	float* operator[](const size_t row_index)
+	float* operator[](const int row_index)
 	{
-		assert(row_index < 2);
+		assert(row_index >= 0 && row_index < 2);
 
 		return data_.array_[row_index];
 	}
@@ -185,7 +185,7 @@ public:
 	static Matrix2x2 StrassenMatrixProduct(const Matrix2x2& A, const Matrix2x2& B)
 	{
 		// Strassen's algorithm for 2x2 matrices. Note that we have decreased the number
-		// of multiplications to 7, at the cost of more addition and substraction operations.
+		// of multiplications to 7, at the cost of more addition and subtraction operations.
 		const float A_11 = A[0][0];
 		const float A_12 = A[0][1];
 		const float A_21 = A[1][0];
@@ -216,7 +216,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	std::string ToString() const
 	{
-		std::string result =
+		const std::string result =
 			"\n" + data_.rows_[0].ToString() +
 			"\n" + data_.rows_[1].ToString();
 
