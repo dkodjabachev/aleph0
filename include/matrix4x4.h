@@ -3,6 +3,7 @@
 // Standard C++ library headers
 #include <cassert>
 #include <string>
+#include <utility>
 
 namespace aleph0
 {
@@ -20,9 +21,9 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	Matrix4x4(const Matrix4x4& other)
 	{
-		for (size_t i = 0; i < 4; ++i)
+		for (int i = 0; i < 4; ++i)
 		{
-			for (size_t j = 0; j < 4; ++j)
+			for (int j = 0; j < 4; ++j)
 			{
 				(*this)[i][j] = other[i][j];
 			}
@@ -30,27 +31,36 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
+	Matrix4x4(const float elements[16])
+	{
+		for (int i = 0; i < 16; ++i)
+		{
+			data_.elements_[i] = elements[i];
+		}
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
 	Matrix4x4(const Matrix2x2& M_11, const Matrix2x2& M_12, const Matrix2x2& M_21, const Matrix2x2& M_22)
 	{
-		data_.array_[0][0] = M_11[0][0];
-		data_.array_[0][1] = M_11[0][1];
-		data_.array_[1][0] = M_11[1][0];
-		data_.array_[1][1] = M_11[1][1];
+		(*this)[0][0] = M_11[0][0];
+		(*this)[0][1] = M_11[0][1];
+		(*this)[1][0] = M_11[1][0];
+		(*this)[1][1] = M_11[1][1];
 
-		data_.array_[0][2] = M_12[0][0];
-		data_.array_[0][3] = M_12[0][1];
-		data_.array_[1][2] = M_12[1][0];
-		data_.array_[1][3] = M_12[1][1];
+		(*this)[0][2] = M_12[0][0];
+		(*this)[0][3] = M_12[0][1];
+		(*this)[1][2] = M_12[1][0];
+		(*this)[1][3] = M_12[1][1];
 
-		data_.array_[2][0] = M_21[0][0];
-		data_.array_[2][1] = M_21[0][1];
-		data_.array_[3][0] = M_21[1][0];
-		data_.array_[3][1] = M_21[1][1];
+		(*this)[2][0] = M_21[0][0];
+		(*this)[2][1] = M_21[0][1];
+		(*this)[3][0] = M_21[1][0];
+		(*this)[3][1] = M_21[1][1];
 
-		data_.array_[2][2] = M_22[0][0];
-		data_.array_[2][3] = M_22[0][1];
-		data_.array_[3][2] = M_22[1][0];
-		data_.array_[3][3] = M_22[1][1];
+		(*this)[2][2] = M_22[0][0];
+		(*this)[2][3] = M_22[0][1];
+		(*this)[3][2] = M_22[1][0];
+		(*this)[3][3] = M_22[1][1];
 	}
 
 public:
@@ -92,9 +102,9 @@ public:
 	{
 		Matrix4x4 result;
 
-		for (size_t i = 0; i < 4; ++i)
+		for (int i = 0; i < 4; ++i)
 		{
-			for (size_t j = 0; j < 4; ++j)
+			for (int j = 0; j < 4; ++j)
 			{
 				result[i][j] = (*this)[i][j] + other[i][j];
 			}
@@ -116,9 +126,9 @@ public:
 	{
 		Matrix4x4 result;
 
-		for (size_t i = 0; i < 4; ++i)
+		for (int i = 0; i < 4; ++i)
 		{
-			for (size_t j = 0; j < 4; ++j)
+			for (int j = 0; j < 4; ++j)
 			{
 				result[i][j] = (*this)[i][j] - other[i][j];
 			}
@@ -140,7 +150,7 @@ public:
 	{
 		Matrix4x4 result;
 
-		for (size_t i = 0; i < 16; ++i)
+		for (int i = 0; i < 16; ++i)
 		{
 			result.data_.elements_[i] = data_.elements_[i] * scalar;
 		}
@@ -163,15 +173,38 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
+	bool operator==(const Matrix4x4& other) const
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				if ((*this)[i][j] != other[i][j])
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	bool operator!=(const Matrix4x4& other) const
+	{
+		return !(*this == other);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
 	static Matrix4x4 NaiveMatrixProduct(const Matrix4x4& A, const Matrix4x4& B)
 	{
 		Matrix4x4 result;
 
-		for (size_t i = 0; i < 4; ++i)
+		for (int i = 0; i < 4; ++i)
 		{
-			for (size_t j = 0; j < 4; ++j)
+			for (int j = 0; j < 4; ++j)
 			{
-				for (size_t k = 0; k < 4; ++k)
+				for (int k = 0; k < 4; ++k)
 				{
 					result[i][j] += A[i][k] * B[k][j];
 				}
@@ -213,16 +246,68 @@ public:
 		return result;
 	}
 
+	//////////////////////////////////////////////////////////////////////////////
+	float Trace() const
+	{
+		const float trace = (*this)[0][0] + (*this)[1][1] + (*this)[2][2] + (*this)[3][3];
+
+		return trace;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	float Determinant() const
+	{
+		const float a_1 = (*this)[0][0] * (*this)[1][1] - (*this)[0][1] * (*this)[1][0];
+		const float a_2 = (*this)[0][0] * (*this)[1][2] - (*this)[0][2] * (*this)[1][0];
+		const float a_3 = (*this)[0][0] * (*this)[1][3] - (*this)[0][3] * (*this)[1][0];
+		const float a_4 = (*this)[0][1] * (*this)[1][2] - (*this)[0][2] * (*this)[1][1];
+		const float a_5 = (*this)[0][1] * (*this)[1][3] - (*this)[0][3] * (*this)[1][1];
+		const float a_6 = (*this)[0][2] * (*this)[1][3] - (*this)[0][3] * (*this)[1][2];
+		const float b_1 = (*this)[2][0] * (*this)[3][1] - (*this)[2][1] * (*this)[3][0];
+		const float b_2 = (*this)[2][0] * (*this)[3][2] - (*this)[2][2] * (*this)[3][0];
+		const float b_3 = (*this)[2][0] * (*this)[3][3] - (*this)[2][3] * (*this)[3][0];
+		const float b_4 = (*this)[2][1] * (*this)[3][2] - (*this)[2][2] * (*this)[3][1];
+		const float b_5 = (*this)[2][1] * (*this)[3][3] - (*this)[2][3] * (*this)[3][1];
+		const float b_6 = (*this)[2][2] * (*this)[3][3] - (*this)[2][3] * (*this)[3][2];
+		const float det = a_1 * b_6 - a_2 * b_5 + a_3 * b_4 + a_4 * b_3 - a_5 * b_2 + a_6 * b_1;
+
+		return det;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	Matrix4x4& Transpose()
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				std::swap((*this)[i][j], (*this)[j][i]);
+			}
+		}
+
+		return *this;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	Matrix4x4 Transposed() const
+	{
+		Matrix4x4 result(*this);
+
+		result.Transpose();
+
+		return result;
+	}
+
 	///////////////////////////////////////////////////////////////////////////////
 	std::string ToString() const
 	{
 		std::string result;
 
-		for (size_t i = 0; i < 4; ++i)
+		for (int i = 0; i < 4; ++i)
 		{
 			result += "\n(";
 				
-			for (size_t j = 0; j < 4; ++j)
+			for (int j = 0; j < 4; ++j)
 			{
 				result += std::to_string((*this)[i][j]);
 

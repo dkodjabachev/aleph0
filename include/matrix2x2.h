@@ -3,6 +3,7 @@
 // Standard C++ library headers
 #include <cassert>
 #include <string>
+#include <utility>
 
 // Aleph0 library headers
 #include "vector2d.h"
@@ -149,15 +150,38 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
+	bool operator==(const Matrix2x2& other) const
+	{
+		for (int i = 0; i < 2; ++i)
+		{
+			for (int j = 0; j < 2; ++j)
+			{
+				if ((*this)[i][j] != other[i][j])
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	bool operator!=(const Matrix2x2& other) const
+	{
+		return !(*this == other);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
 	static Matrix2x2 NaiveMatrixProduct(const Matrix2x2& A, const Matrix2x2& B)
 	{
 		Matrix2x2 result;
 
-		for (size_t i = 0; i < 2; ++i)
+		for (int i = 0; i < 2; ++i)
 		{
-			for (size_t j = 0; j < 2; ++j)
+			for (int j = 0; j < 2; ++j)
 			{
-				for (size_t k = 0; k < 2; ++k)
+				for (int k = 0; k < 2; ++k)
 				{
 					result[i][j] += A[i][k] * B[k][j];
 				}
@@ -186,29 +210,63 @@ public:
 	{
 		// Strassen's algorithm for 2x2 matrices. Note that we have decreased the number
 		// of multiplications to 7, at the cost of more addition and subtraction operations.
-		const float A_11 = A[0][0];
-		const float A_12 = A[0][1];
-		const float A_21 = A[1][0];
-		const float A_22 = A[1][1];
-		const float B_11 = B[0][0];
-		const float B_12 = B[0][1];
-		const float B_21 = B[1][0];
-		const float B_22 = B[1][1];
+		const float a_11 = A[0][0];
+		const float a_12 = A[0][1];
+		const float a_21 = A[1][0];
+		const float a_22 = A[1][1];
+		const float b_11 = B[0][0];
+		const float b_12 = B[0][1];
+		const float b_21 = B[1][0];
+		const float b_22 = B[1][1];
 
-		const float M_1 = (A_11 + A_22) * (B_11 + B_22);
-		const float M_2 = (A_21 + A_22) * B_11;
-		const float M_3 = A_11 * (B_12 - B_22);
-		const float M_4 = A_22 * (B_21 - B_11);
-		const float M_5 = (A_11 + A_12) * B_22;
-		const float M_6 = (A_21 - A_11) * (B_11 + B_12);
-		const float M_7 = (A_12 - A_22) * (B_21 + B_22);
+		const float m_1 = (a_11 + a_22) * (b_11 + b_22);
+		const float m_2 = (a_21 + a_22) * b_11;
+		const float m_3 = a_11 * (b_12 - b_22);
+		const float m_4 = a_22 * (b_21 - b_11);
+		const float m_5 = (a_11 + a_12) * b_22;
+		const float m_6 = (a_21 - a_11) * (b_11 + b_12);
+		const float m_7 = (a_12 - a_22) * (b_21 + b_22);
 
-		const float C_11 = (M_1 + M_4 - M_5 + M_7);
-		const float C_12 = (M_3 + M_5);
-		const float C_21 = (M_2 + M_4);;
-		const float C_22 = (M_1 - M_2 + M_3 + M_6);
+		const float c_11 = (m_1 + m_4 - m_5 + m_7);
+		const float c_12 = (m_3 + m_5);
+		const float c_21 = (m_2 + m_4);;
+		const float c_22 = (m_1 - m_2 + m_3 + m_6);
 
-		const Matrix2x2 result(C_11, C_12, C_21, C_22);
+		const Matrix2x2 result(c_11, c_12, c_21, c_22);
+
+		return result;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	float Trace() const
+	{
+		const float trace = (*this)[0][0] + (*this)[1][1];
+
+		return trace;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	float Determinant() const
+	{
+		const float det = (*this)[0][0] * (*this)[1][1] - (*this)[0][1] * (*this)[1][0];
+
+		return det;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	Matrix2x2& Transpose()
+	{
+		std::swap((*this)[0][1], (*this)[1][0]);
+
+		return *this;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	Matrix2x2 Transposed() const
+	{
+		Matrix2x2 result(*this);
+
+		result.Transpose();
 
 		return result;
 	}
