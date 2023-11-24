@@ -154,6 +154,17 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
+	Vector2d operator*(const Vector2d& vector)
+	{
+		Vector2d result;
+
+		result(0) = m(0, 0) * vector(0) + m(0, 1) * vector(1);
+		result(1) = m(1, 0) * vector(0) + m(1, 1) * vector(1);
+
+		return result;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
 	bool operator==(const Matrix2x2& other) const
 	{
 		for (int i = 0; i < 2; ++i)
@@ -271,6 +282,35 @@ public:
 		Matrix2x2 result(*this);
 
 		result.Transpose();
+
+		return result;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	Matrix2x2& Invert()
+	{
+		const float det = Determinant();
+
+		assert(det != 0);
+
+		Matrix2x2 cofactor_matrix;
+
+		cofactor_matrix(0, 0) =  m(1, 1);
+		cofactor_matrix(0, 1) = -m(1, 0);
+		cofactor_matrix(1, 0) = -m(0, 1);
+		cofactor_matrix(1, 1) =  m(0, 0);
+
+		(*this) = cofactor_matrix.Transpose() * (1 / det);
+
+		return *this;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	Matrix2x2 Inverse() const
+	{
+		Matrix2x2 result(*this);
+
+		result.Invert();
 
 		return result;
 	}
