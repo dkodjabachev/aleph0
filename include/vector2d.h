@@ -27,13 +27,13 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	Vector2d(const Vector2d& other)
 	{
-		coordinates_[0] = other[0];
-		coordinates_[1] = other[1];
+		coordinates_[0] = other(0);
+		coordinates_[1] = other(1);
 	}
 
 public:
 	///////////////////////////////////////////////////////////////////////////////
-	float& operator[](const int index)
+	const float& operator()(const int index) const
 	{
 		assert(index >= 0 && index <= 1);
 
@@ -41,7 +41,7 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
-	const float& operator[](const int index) const
+	float& operator()(const int index)
 	{
 		assert(index >= 0 && index <= 1);
 
@@ -53,8 +53,8 @@ public:
 	{
 		Vector2d result;
 
-		result[0] = coordinates_[0] + other[0];
-		result[1] = coordinates_[1] + other[1];
+		result(0) = coordinates_[0] + other(0);
+		result(1) = coordinates_[1] + other(1);
 
 		return result;
 	}
@@ -62,8 +62,8 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	Vector2d& operator+=(const Vector2d& other)
 	{
-		coordinates_[0] += other[0];
-		coordinates_[1] += other[1];
+		coordinates_[0] += other(0);
+		coordinates_[1] += other(1);
 
 		return *this;
 	}
@@ -73,8 +73,8 @@ public:
 	{
 		Vector2d result;
 
-		result[0] = coordinates_[0] - other[0];
-		result[1] = coordinates_[1] - other[1];
+		result(0) = coordinates_[0] - other(0);
+		result(1) = coordinates_[1] - other(1);
 
 		return result;
 	}
@@ -82,8 +82,8 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	Vector2d& operator-=(const Vector2d& other)
 	{
-		coordinates_[0] -= other[0];
-		coordinates_[1] -= other[1];
+		coordinates_[0] -= other(0);
+		coordinates_[1] -= other(1);
 
 		return *this;
 	}
@@ -93,8 +93,8 @@ public:
 	{
 		Vector2d result;
 
-		result[0] = coordinates_[0] * scalar;
-		result[1] = coordinates_[1] * scalar;
+		result(0) = coordinates_[0] * scalar;
+		result(1) = coordinates_[1] * scalar;
 
 		return result;
 	}
@@ -102,8 +102,8 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	Vector2d& operator*=(const float scalar)
 	{
-		coordinates_[0] = coordinates_[0] * scalar;
-		coordinates_[1] = coordinates_[1] * scalar;
+		coordinates_[0] *= scalar;
+		coordinates_[1] *= scalar;
 
 		return *this;
 	}
@@ -111,7 +111,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	bool operator==(const Vector2d& other) const
 	{
-		return coordinates_[0] == other[0] && coordinates_[1] == other[1];
+		return coordinates_[0] == other(0) && coordinates_[1] == other(1);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -123,7 +123,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	float ScalarProduct(const Vector2d& other) const
 	{
-		return coordinates_[0] * other[0] + coordinates_[1] * other[1];
+		return coordinates_[0] * other(0) + coordinates_[1] * other(1);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////

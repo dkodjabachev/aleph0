@@ -31,22 +31,22 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	Vector3d(const Vector2d& other, float z = 0.f)
 	{
-		coordinates_[0] = other[0];
-		coordinates_[1] = other[1];
+		coordinates_[0] = other(0);
+		coordinates_[1] = other(1);
 		coordinates_[2] = z;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
 	Vector3d(const Vector3d& other)
 	{
-		coordinates_[0] = other[0];
-		coordinates_[1] = other[1];
-		coordinates_[2] = other[2];
+		coordinates_[0] = other(0);
+		coordinates_[1] = other(1);
+		coordinates_[2] = other(2);
 	}
 
 public:
 	///////////////////////////////////////////////////////////////////////////////
-	float& operator[](const int index)
+	const float& operator()(const int index) const
 	{
 		assert(index >= 0 && index <= 2);
 
@@ -54,7 +54,7 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
-	const float& operator[](const int index) const
+	float& operator()(const int index)
 	{
 		assert(index >= 0 && index <= 2);
 
@@ -66,9 +66,9 @@ public:
 	{
 		Vector3d result;
 
-		result[0] = coordinates_[0] + other[0];
-		result[1] = coordinates_[1] + other[1];
-		result[2] = coordinates_[2] + other[2];
+		result(0) = coordinates_[0] + other(0);
+		result(1) = coordinates_[1] + other(1);
+		result(2) = coordinates_[2] + other(2);
 
 		return result;
 	}
@@ -76,9 +76,9 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	Vector3d& operator+=(const Vector3d& other)
 	{
-		coordinates_[0] += other[0];
-		coordinates_[1] += other[1];
-		coordinates_[2] += other[2];
+		coordinates_[0] += other(0);
+		coordinates_[1] += other(1);
+		coordinates_[2] += other(2);
 
 		return *this;
 	}
@@ -88,9 +88,9 @@ public:
 	{
 		Vector3d result;
 
-		result[0] = coordinates_[0] - other[0];
-		result[1] = coordinates_[1] - other[1];
-		result[2] = coordinates_[2] - other[2];
+		result(0) = coordinates_[0] - other(0);
+		result(1) = coordinates_[1] - other(1);
+		result(2) = coordinates_[2] - other(2);
 
 		return result;
 	}
@@ -98,9 +98,9 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	Vector3d& operator-=(const Vector3d& other)
 	{
-		coordinates_[0] -= other[0];
-		coordinates_[1] -= other[1];
-		coordinates_[2] -= other[2];
+		coordinates_[0] -= other(0);
+		coordinates_[1] -= other(1);
+		coordinates_[2] -= other(2);
 
 		return *this;
 	}
@@ -110,9 +110,9 @@ public:
 	{
 		Vector3d result;
 
-		result[0] = coordinates_[0] * scalar;
-		result[1] = coordinates_[1] * scalar;
-		result[2] = coordinates_[2] * scalar;
+		result(0) = coordinates_[0] * scalar;
+		result(1) = coordinates_[1] * scalar;
+		result(2) = coordinates_[2] * scalar;
 
 		return result;
 	}
@@ -120,9 +120,9 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	Vector3d& operator*=(const float scalar)
 	{
-		coordinates_[0] = coordinates_[0] * scalar;
-		coordinates_[1] = coordinates_[1] * scalar;
-		coordinates_[2] = coordinates_[2] * scalar;
+		coordinates_[0] *= scalar;
+		coordinates_[1] *= scalar;
+		coordinates_[2] *= scalar;
 
 		return *this;
 	}
@@ -130,9 +130,9 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	bool operator==(const Vector3d& other) const
 	{
-		return coordinates_[0] == other[0]
-			&& coordinates_[1] == other[1]
-			&& coordinates_[2] == other[2];
+		return coordinates_[0] == other(0)
+			&& coordinates_[1] == other(1)
+			&& coordinates_[2] == other(2);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -142,9 +142,9 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
-	float ScalarProduct(const Vector2d& other) const
+	float ScalarProduct(const Vector3d& other) const
 	{
-		return coordinates_[0] * other[0] + coordinates_[1] * other[1] + coordinates_[2] * other[2];
+		return coordinates_[0] * other(0) + coordinates_[1] * other(1) + coordinates_[2] * other(2);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
