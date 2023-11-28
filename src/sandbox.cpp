@@ -1,10 +1,12 @@
 // Standard C++ library headers
 #include <iostream>
+#include <random>
 
 // Aleph0 library headers
 #include "vector2d.h"
 #include "vector3d.h"
 #include "matrix2x2.h"
+#include "matrix3x3.h"
 #include "matrix4x4.h"
 
 using namespace std;
@@ -119,6 +121,53 @@ int main()
 		cout << "det(L) = " << L.Determinant() << endl;
 
 		assert(L.Determinant() == 0.f);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	//
+	// Check if inverting 3x3 matrices works as expected.
+	{
+		random_device seed_provider;
+		mt19937 random_generator(seed_provider());
+		uniform_real_distribution<float> distribution(0, 1);
+
+		Matrix3x3 M;
+
+		for (int i = 0; i < 9; ++i)
+		{
+			M(i) = distribution(random_generator);
+		}
+
+		Matrix3x3 I; I.SetIdentityMatrix();
+
+		cout << "M = " << M.ToString() << endl;
+		cout << "M^-1 = " << M.Inverse().ToString() << endl;
+		cout << "M * M^-1" << (M * M.Inverse()).ToString() << endl;
+
+		assert((M * M.Inverse()).IsApproximatelyEqual(I, 0.00001f));
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	//
+	// Check if inverting 4x4 matrices works as expected.
+	{
+		random_device seed_provider;
+		mt19937 random_generator(seed_provider());
+		uniform_real_distribution<float> distribution(0, 1);
+		Matrix4x4 M;
+
+		for (int i = 0; i < 16; ++i)
+		{
+			M(i) = distribution(random_generator);
+		}
+
+		Matrix4x4 I; I.SetIdentityMatrix();
+
+		cout << "M = " << M.ToString() << endl;
+		cout << "M^-1 = " << M.Inverse().ToString() << endl;
+		cout << "M * M^-1" << (M * M.Inverse()).ToString() << endl;
+
+		assert((M * M.Inverse()).IsApproximatelyEqual(I, 0.00001f));
 	}
 
 	return 0;

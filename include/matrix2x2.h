@@ -39,18 +39,22 @@ public:
 
 public:
 	///////////////////////////////////////////////////////////////////////////////
-	void SetZeroMatrix()
+	Matrix2x2& SetZeroMatrix()
 	{
 		memset(data_.elements_, 0, 4 * sizeof(float));
+
+		return *this;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
-	void SetIdentityMatrix()
+	Matrix2x2& SetIdentityMatrix()
 	{
 		m(0,0) = 1.f;
 		m(0,1) = 0.f;
 		m(1,0) = 0.f;
 		m(1,1) = 1.f;
+
+		return *this;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -63,6 +67,22 @@ public:
 	float& operator()(const int row_index, const int col_index)
 	{
 		return m(row_index, col_index);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	const float& operator()(const int index) const
+	{
+		assert(index >= 0 && index < 4);
+
+		return data_.elements_[index];
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	float& operator()(const int index)
+	{
+		assert(index >= 0 && index < 4);
+
+		return data_.elements_[index];
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -92,7 +112,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	Matrix2x2 operator+=(const Matrix2x2& other)
 	{
-		(*this) = (*this) + other;
+		*this = *this + other;
 
 		return *this;
 	}
@@ -113,7 +133,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	Matrix2x2& operator-=(const Matrix2x2& other)
 	{
-		(*this) = (*this) - other;
+		*this = *this - other;
 
 		return *this;
 	}
@@ -134,7 +154,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	Matrix2x2& operator*=(const float scalar)
 	{
-		(*this) = (*this) * scalar;
+		*this = *this * scalar;
 
 		return *this;
 	}
@@ -148,7 +168,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	Matrix2x2& operator*=(const Matrix2x2& other)
 	{
-		(*this) = NaiveMatrixProduct(*this, other);
+		*this = NaiveMatrixProduct(*this, other);
 
 		return *this;
 	}
@@ -158,8 +178,8 @@ public:
 	{
 		Vector2d result;
 
-		result(0) = m(0, 0) * vector(0) + m(0, 1) * vector(1);
-		result(1) = m(1, 0) * vector(0) + m(1, 1) * vector(1);
+		result(0) = m(0,0) * vector(0) + m(0,1) * vector(1);
+		result(1) = m(1,0) * vector(0) + m(1,1) * vector(1);
 
 		return result;
 	}
@@ -295,12 +315,12 @@ public:
 
 		Matrix2x2 cofactor_matrix;
 
-		cofactor_matrix(0, 0) =  m(1, 1);
-		cofactor_matrix(0, 1) = -m(1, 0);
-		cofactor_matrix(1, 0) = -m(0, 1);
-		cofactor_matrix(1, 1) =  m(0, 0);
+		cofactor_matrix(0,0) =  m(1,1);
+		cofactor_matrix(0,1) = -m(1,0);
+		cofactor_matrix(1,0) = -m(0,1);
+		cofactor_matrix(1,1) =  m(0,0);
 
-		(*this) = cofactor_matrix.Transpose() * (1 / det);
+		*this = cofactor_matrix.Transpose() * (1 / det);
 
 		return *this;
 	}

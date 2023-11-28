@@ -5,6 +5,10 @@
 #include <string>
 #include <utility>
 
+// Aleph0 library headers
+#include "matrix2x2.h"
+#include "matrix3x3.h"
+
 namespace aleph0
 {
 
@@ -64,13 +68,15 @@ public:
 
 public:
 	///////////////////////////////////////////////////////////////////////////////
-	void SetZeroMatrix()
+	Matrix4x4& SetZeroMatrix()
 	{
 		memset(data_.elements_, 0, 16 * sizeof(float));
+
+		return *this;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
-	void SetIdentityMatrix()
+	Matrix4x4& SetIdentityMatrix()
 	{
 		SetZeroMatrix();
 
@@ -78,6 +84,8 @@ public:
 		m(1,1) = 1.f;
 		m(2,2) = 1.f;
 		m(3,3) = 1.f;
+
+		return *this;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -90,6 +98,22 @@ public:
 	float& operator()(const int row_index, const int col_index)
 	{
 		return m(row_index, col_index);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	const float& operator()(const int index) const
+	{
+		assert(index >= 0 && index < 16);
+
+		return data_.elements_[index];
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	float& operator()(const int index)
+	{
+		assert(index >= 0 && index < 16);
+
+		return data_.elements_[index];
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -111,9 +135,9 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	Matrix4x4& operator+=(const Matrix4x4& other)
 	{
-		(*this) = (*this) + other;
+		*this = *this + other;
 
-		return (*this);
+		return *this;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -135,9 +159,9 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	Matrix4x4& operator-=(const Matrix4x4& other)
 	{
-		(*this) = (*this) - other;
+		*this = *this - other;
 
-		return (*this);
+		return *this;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -157,11 +181,11 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
-	Matrix4x4& operator*(const float scalar)
+	Matrix4x4& operator*=(const float scalar)
 	{
-		(*this) = (*this) * scalar;
+		*this = *this * scalar;
 
-		return (*this);
+		return *this;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -173,11 +197,23 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	bool operator==(const Matrix4x4& other) const
 	{
+		return IsApproximatelyEqual(other);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	bool operator!=(const Matrix4x4& other) const
+	{
+		return !(*this == other);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	bool IsApproximatelyEqual(const Matrix4x4& other, const float epsilon = 0.f) const
+	{
 		for (int i = 0; i < 4; ++i)
 		{
 			for (int j = 0; j < 4; ++j)
 			{
-				if (m(i,j) != other(i,j))
+				if (std::abs(m(i, j) - other(i, j)) > epsilon)
 				{
 					return false;
 				}
@@ -185,12 +221,6 @@ public:
 		}
 
 		return true;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////
-	bool operator!=(const Matrix4x4& other) const
-	{
-		return !(*this == other);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -279,7 +309,10 @@ public:
 		{
 			for (int j = 0; j < 4; ++j)
 			{
-				std::swap(m(i,j), m(j,i));
+				if (i < j)
+				{
+					std::swap(m(i,j), m(j,i));
+				}
 			}
 		}
 
@@ -292,6 +325,68 @@ public:
 		Matrix4x4 result(*this);
 
 		result.Transpose();
+
+		return result;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	Matrix4x4& Invert()
+	{
+		const float det = Determinant();
+
+		assert(det != 0);
+
+		Matrix4x4 cofactor_matrix;
+
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				cofactor_matrix(i,j) = std::powf(-1.f, (float)(i + j)) * Submatrix(i,j).Determinant();
+			}
+		}
+
+		*this = cofactor_matrix.Transpose() * (1 / det);
+
+		return *this;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	Matrix4x4 Inverse() const
+	{
+		Matrix4x4 result(*this);
+
+		result.Invert();
+
+		return result;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	Matrix3x3 Submatrix(int skip_row_index, int skip_col_index) const
+	{
+		assert(skip_row_index >= 0 && skip_row_index < 4);
+		assert(skip_col_index >= 0 && skip_col_index < 4);
+
+		Matrix3x3 result;
+		int index = 0;
+
+		for (int i = 0; i < 4; ++i)
+		{
+			if (i == skip_row_index)
+			{
+				continue;
+			}
+
+			for (int j = 0; j < 4; ++j)
+			{
+				if (j == skip_col_index)
+				{
+					continue;
+				}
+
+				result(index++) = m(i, j);
+			}
+		}
 
 		return result;
 	}
@@ -362,7 +457,6 @@ private:
 
 	Data data_;
 }; // class Matrix4x4
-
 
 ///////////////////////////////////////////////////////////////////////////////
 Matrix4x4 operator*(const float scalar, const Matrix4x4& matrix)
