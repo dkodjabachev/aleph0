@@ -1,9 +1,7 @@
 #pragma once
 
-// Standard C++ library headers
-#include <cassert>
-
 // Aleph0 library headers
+#include "aleph0.h"
 #include "vector2d.h"
 
 namespace aleph0
@@ -145,6 +143,72 @@ public:
 	float ScalarProduct(const Vector3d& other) const
 	{
 		return coordinates_[0] * other(0) + coordinates_[1] * other(1) + coordinates_[2] * other(2);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	Vector3d VectorProduct(const Vector3d& other) const
+	{
+		Vector3d result;
+
+		result(0) = coordinates_[1] * other(2) - coordinates_[2] * other(1);
+		result(1) = coordinates_[2] * other(0) - coordinates_[0] * other(2);
+		result(2) = coordinates_[0] * other(1) - coordinates_[1] * other(0);
+
+		return result;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	float GetNorm() const
+	{
+		return std::sqrt(ScalarProduct(*this));
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	float GetNormSq() const
+	{
+		return ScalarProduct(*this);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	Vector3d& Normalize()
+	{
+		const float normSq = GetNormSq();
+
+		assert(normSq > aleph0::epsilon);
+
+		*this *= (1 / std::sqrt(normSq));
+
+		return *this;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	Vector3d GetNormalized() const
+	{
+		Vector3d result(*this);
+
+		result.Normalize();
+
+		return result;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	bool IsZero() const
+	{
+		const float normSq = GetNormSq();
+
+		return normSq < aleph0::epsilon;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	bool IsOrthogonalTo(const Vector3d& other) const
+	{
+		return std::abs(ScalarProduct(other)) < aleph0::epsilon;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	bool IsCollinearTo(const Vector3d& other) const
+	{
+		return VectorProduct(other).GetNorm() < aleph0::epsilon;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////

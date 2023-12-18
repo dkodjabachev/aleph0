@@ -1,11 +1,6 @@
 #pragma once
 
-// Standard C++ library headers
-#include <cassert>
-#include <string>
-#include <utility>
-
-// Aleph0 library headers
+#include "aleph0.h"
 #include "vector2d.h"
 
 namespace aleph0
@@ -22,10 +17,7 @@ public:
 
 	Matrix2x2(const Matrix2x2& other)
 	{
-		m(0,0) = other(0,0);
-		m(0,1) = other(0,1);
-		m(1,0) = other(1,0);
-		m(1,1) = other(1,1);
+		memcpy(data_.elements_, other.data_.elements_, 4 * sizeof(float));
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -187,11 +179,23 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	bool operator==(const Matrix2x2& other) const
 	{
+		return IsApproximatelyEqual(other, 0.0f);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	bool operator!=(const Matrix2x2& other) const
+	{
+		return !(*this == other);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	bool IsApproximatelyEqual(const Matrix2x2& other, const float epsilon = aleph0::epsilon) const
+	{
 		for (int i = 0; i < 2; ++i)
 		{
 			for (int j = 0; j < 2; ++j)
 			{
-				if (m(i,j) != other(i,j))
+				if (std::abs(m(i,j) - other(i,j)) > epsilon)
 				{
 					return false;
 				}
@@ -199,12 +203,6 @@ public:
 		}
 
 		return true;
-	}
-
-	///////////////////////////////////////////////////////////////////////////////
-	bool operator!=(const Matrix2x2& other) const
-	{
-		return !(*this == other);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////

@@ -1,11 +1,7 @@
 #pragma once
 
-// Standard C++ library headers
-#include <cassert>
-#include <string>
-#include <utility>
-
 // Aleph0 library headers
+#include "aleph0.h"
 #include "matrix2x2.h"
 #include "matrix3x3.h"
 
@@ -24,22 +20,13 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	Matrix4x4(const Matrix4x4& other)
 	{
-		for (int i = 0; i < 4; ++i)
-		{
-			for (int j = 0; j < 4; ++j)
-			{
-				m(i,j) = other(i,j);
-			}
-		}
+		memcpy(data_.elements_, other.data_.elements_, 16 * sizeof(float));
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
 	Matrix4x4(const float elements[16])
 	{
-		for (int i = 0; i < 16; ++i)
-		{
-			data_.elements_[i] = elements[i];
-		}
+		memcpy(data_.elements_, elements, 16 * sizeof(float));
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -114,6 +101,14 @@ public:
 		assert(index >= 0 && index < 16);
 
 		return data_.elements_[index];
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	Matrix4x4& operator=(const Matrix4x4& other)
+	{
+		memcpy(data_.elements_, other.data_.elements_, 16 * sizeof(float));
+
+		return *this;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -195,9 +190,17 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
+	Matrix4x4& operator*=(const Matrix4x4& other)
+	{
+		*this = NaiveMatrixProduct(*this, other);
+
+		return *this;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
 	bool operator==(const Matrix4x4& other) const
 	{
-		return IsApproximatelyEqual(other);
+		return IsApproximatelyEqual(other, 0.0f);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -207,7 +210,7 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
-	bool IsApproximatelyEqual(const Matrix4x4& other, const float epsilon = 0.f) const
+	bool IsApproximatelyEqual(const Matrix4x4& other, const float epsilon = aleph0::epsilon) const
 	{
 		for (int i = 0; i < 4; ++i)
 		{

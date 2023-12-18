@@ -1,13 +1,9 @@
 #pragma once
 
-// Standard C++ library headers
-#include <cassert>
-#include <cmath>
-#include <string>
-#include <utility>
-
 // Aleph0 library headers
+#include "aleph0.h"
 #include "matrix2x2.h"
+#include "vector3d.h"
 
 namespace aleph0
 {
@@ -24,22 +20,13 @@ public:
 	///////////////////////////////////////////////////////////////////////////////
 	Matrix3x3(const Matrix3x3& other)
 	{
-		for (int i = 0; i < 3; ++i)
-		{
-			for (int j = 0; j < 3; ++j)
-			{
-				m(i,j) = other(i,j);
-			}
-		}
+		memcpy(data_.elements_, other.data_.elements_, 9 * sizeof(float));
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
 	Matrix3x3(const float elements[9])
 	{
-		for (int i = 0; i < 9; ++i)
-		{
-			data_.elements_[i] = elements[i];
-		}
+		memcpy(data_.elements_, elements, 9 * sizeof(float));
 	}
 
 public:
@@ -92,6 +79,14 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
+	Matrix3x3& operator=(const Matrix3x3& other)
+	{
+		memcpy(data_.elements_, other.data_.elements_, 9 * sizeof(float));
+
+		return *this;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
 	Matrix3x3 operator+(const Matrix3x3& other) const
 	{
 		Matrix3x3 result;
@@ -139,7 +134,6 @@ public:
 		return *this;
 	}
 
-
 	///////////////////////////////////////////////////////////////////////////////
 	Matrix3x3 operator*(const float scalar) const
 	{
@@ -171,9 +165,29 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
+	Matrix3x3& operator*=(const Matrix3x3& other)
+	{
+		*this = NaiveMatrixProduct(*this, other);
+
+		return *this;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	Vector3d operator*(const Vector3d& vector)
+	{
+		Vector3d result;
+
+		result(0) = m(0,0) * vector(0) + m(0,1) * vector(1) + m(0,2) * vector(2);
+		result(0) = m(1,0) * vector(0) + m(1,1) * vector(1) + m(1,2) * vector(2);
+		result(0) = m(2,0) * vector(0) + m(2,1) * vector(1) + m(2,2) * vector(2);
+
+		return result;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
 	bool operator==(const Matrix3x3& other) const
 	{
-		return IsApproximatelyEqual(other);
+		return IsApproximatelyEqual(other, 0.0f);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -183,13 +197,13 @@ public:
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
-	bool IsApproximatelyEqual(const Matrix3x3& other, const float epsilon = 0.f) const
+	bool IsApproximatelyEqual(const Matrix3x3& other, const float epsilon = aleph0::epsilon) const
 	{
 		for (int i = 0; i < 3; ++i)
 		{
 			for (int j = 0; j < 3; ++j)
 			{
-				if (std::abs(m(i, j) - other(i, j)) > epsilon)
+				if (std::abs(m(i,j) - other(i,j)) > epsilon)
 				{
 					return false;
 				}

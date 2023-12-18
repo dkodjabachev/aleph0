@@ -1,8 +1,7 @@
 #pragma once
 
-// Standard C++ library headers
-#include <cassert>
-#include <string>
+// Aleph0 library headers
+#include "aleph0.h"
 
 namespace aleph0
 {
@@ -124,6 +123,62 @@ public:
 	float ScalarProduct(const Vector2d& other) const
 	{
 		return coordinates_[0] * other(0) + coordinates_[1] * other(1);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	float GetNorm() const
+	{
+		return std::sqrt(ScalarProduct(*this));
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	float GetNormSq() const
+	{
+		return ScalarProduct(*this);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	Vector2d& Normalize()
+	{
+		const float normSq = GetNormSq();
+
+		assert(normSq > aleph0::epsilon);
+
+		*this *= (1 / std::sqrt(normSq));
+
+		return *this;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	Vector2d GetNormalized() const
+	{
+		Vector2d result(*this);
+
+		result.Normalize();
+
+		return result;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	bool IsZero() const
+	{
+		const float normSq = GetNormSq();
+
+		return normSq < aleph0::epsilon;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	bool IsOrthogonalTo(const Vector2d& other) const
+	{
+		return std::abs(ScalarProduct(other)) < aleph0::epsilon;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////
+	bool IsCollinearTo(const Vector2d& other) const
+	{
+		const float det = coordinates_[0] * other(1) - coordinates_[1] * other(0);
+
+		return std::abs(det) < aleph0::epsilon;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
