@@ -46,6 +46,79 @@ Matrix3x3& Matrix3x3::SetIdentityMatrix()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+Matrix3x3& Matrix3x3::SetRotationAroundOx(const float theta)
+{
+	SetIdentityMatrix();
+
+	const float cosTheta = std::cosf(theta);
+	const float sinTheta = std::sinf(theta);
+
+	m(1, 1) = cosTheta;
+	m(1, 2) = -sinTheta;
+	m(2, 1) = sinTheta;
+	m(2, 2) = cosTheta;
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+Matrix3x3& Matrix3x3::SetRotationAroundOy(const float theta)
+{
+	SetIdentityMatrix();
+
+	const float cosTheta = std::cosf(theta);
+	const float sinTheta = std::sinf(theta);
+
+	m(0, 0) = cosTheta;
+	m(0, 2) = -sinTheta;
+	m(2, 0) = sinTheta;
+	m(2, 2) = cosTheta;
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+Matrix3x3& Matrix3x3::SetRotationAroundOz(const float theta)
+{
+	SetIdentityMatrix();
+
+	const float cosTheta = std::cosf(theta);
+	const float sinTheta = std::sinf(theta);
+
+	m(0, 0) = cosTheta;
+	m(0, 1) = -sinTheta;
+	m(1, 0) = sinTheta;
+	m(1, 1) = cosTheta;
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+Matrix3x3& Matrix3x3::SetRotationAroundAxis(const Vector3d& axis, const float theta)
+{
+	assert(std::abs(axis.GetNormSq() - 1.f) > aleph0::epsilon);
+
+	SetIdentityMatrix();
+
+	const float cosTheta = std::cosf(theta);
+	const float sinTheta = std::sinf(theta);
+
+	m(0, 0) = cosTheta + axis(0) * axis(0) * (1 - cosTheta);
+	m(0, 1) = axis(0) * axis(1) * (1 - cosTheta) - axis(2) * sinTheta;
+	m(0, 2) = axis(0) * axis(2) * (1 - cosTheta) + axis(1) * sinTheta;
+
+	m(1, 0) = axis(0) * axis(1) * (1 - cosTheta) + axis(2) * sinTheta;
+	m(1, 1) = cosTheta + axis(1) * axis(1) * (1 - cosTheta);
+	m(1, 2) = axis(1) * axis(2) * (1 - cosTheta) - axis(0) * sinTheta;
+
+	m(2, 0) = axis(0) * axis(2) * (1 - cosTheta) - axis(1) * sinTheta;
+	m(2, 1) = axis(1) * axis(2) * (1 - cosTheta) + axis(0) * sinTheta;
+	m(2, 2) = cosTheta + axis(2) * axis(2) * (1 - cosTheta);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 const float& Matrix3x3::operator()(const int row_index, const int col_index) const
 {
 	return m(row_index, col_index);
@@ -309,7 +382,7 @@ Matrix3x3 Matrix3x3::Inverse() const
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void Matrix3x3::GetAxisAngle(Vector3d& axis, float& theta) const
+void Matrix3x3::GetRotationAxisAngle(Vector3d& axis, float& theta) const
 {
 	const float x = m(2, 1) - m(1, 2);
 	const float y = m(0, 2) - m(2, 0);

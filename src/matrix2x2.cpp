@@ -46,6 +46,20 @@ Matrix2x2& Matrix2x2::SetIdentityMatrix()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+Matrix2x2& Matrix2x2::SetRotationAroundOrigin(const float theta)
+{
+	const float cosTheta = std::cosf(theta);
+	const float sinTheta = std::sinf(theta);
+
+	m(0, 0) = cosTheta;
+	m(0, 1) = -sinTheta;
+	m(1, 0) = sinTheta;
+	m(1, 1) = cosTheta;
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 const float& Matrix2x2::operator()(const int row_index, const int col_index) const
 {
 	return m(row_index, col_index);

@@ -3,6 +3,8 @@
 #include "aleph0.h"
 #include "vector2d.h"
 
+#include "matrix2x2.h"
+
 namespace aleph0
 {
 
@@ -175,6 +177,18 @@ bool Vector2d::IsCollinearTo(const Vector2d& other) const
 	const float det = coordinates_[0] * other(1) - coordinates_[1] * other(0);
 
 	return std::abs(det) < aleph0::epsilon;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+Vector2d& Vector2d::RotateAroundOrigin(const float theta)
+{
+	Matrix2x2 rotationMatrix;
+
+	rotationMatrix.SetRotationAroundOrigin(theta);
+
+	*this = rotationMatrix * (*this);
+
+	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

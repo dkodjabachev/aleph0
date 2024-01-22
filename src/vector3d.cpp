@@ -208,6 +208,77 @@ bool Vector3d::IsCollinearTo(const Vector3d& other) const
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+Vector3d& Vector3d::RotateAroundOx(const float theta)
+{
+	Matrix3x3 rotationMatrix;
+
+	rotationMatrix.SetRotationAroundOx(theta);
+
+	*this = rotationMatrix * (*this);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+Vector3d& Vector3d::RotateAroundOy(const float theta)
+{
+	Matrix3x3 rotationMatrix;
+
+	rotationMatrix.SetRotationAroundOy(theta);
+
+	*this = rotationMatrix * (*this);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+Vector3d& Vector3d::RotateAroundOz(const float theta)
+{
+	Matrix3x3 rotationMatrix;
+
+	rotationMatrix.SetRotationAroundOz(theta);
+
+	*this = rotationMatrix * (*this);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+Vector3d& Vector3d::RotateAroundAxis(const Vector3d& axis, const float theta)
+{
+	Matrix3x3 rotationMatrix;
+
+	rotationMatrix.SetRotationAroundAxis(axis, theta);
+
+	*this = rotationMatrix * (*this);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+Vector3d& Vector3d::RotateAroundAxisByRodrigues(const Vector3d& axis, const float theta)
+{
+	const float cosTheta = std::cosf(theta);
+	const float sinTheta = std::sinf(theta);
+
+	*this = *this * cosTheta + axis.VectorProduct(*this) * sinTheta + axis * (axis.ScalarProduct(*this)) * (1 - cosTheta);
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+float Vector3d::GetAngleTo(const Vector3d& vector) const
+{
+	assert(GetNormSq() > aleph0::epsilon);
+	assert(vector.GetNormSq() > aleph0::epsilon);
+
+	const float scalarProduct = ScalarProduct(vector);
+	const float theta = std::acosf(scalarProduct / (GetNorm() * vector.GetNorm()));
+
+	return theta;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 std::string Vector3d::ToString() const
 {
 	const std::string result =
