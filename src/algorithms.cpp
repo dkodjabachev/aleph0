@@ -5,6 +5,60 @@ namespace aleph0
 {
 
 ///////////////////////////////////////////////////////////////////////////////
+float GetDistanceBetween(const Point3d& point1, const Point3d& point2)
+{
+	const float distance = (point2 - point1).GetNorm();
+
+	return distance;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+float GetDistanceBetween(const Point3d& point, const Line& line)
+{
+	const Vector3d normalizedDirection = line.direction.GetNormalized();
+	const Vector3d originToPoint = point - line.origin;
+	const Vector3d closestPointOnLine = line.origin + originToPoint.ScalarProduct(normalizedDirection) * normalizedDirection;
+	const Vector3d closestPointOnLineToPoint = point - closestPointOnLine;
+	const float distance = closestPointOnLineToPoint.GetNorm();
+
+	return distance;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+float GetDistanceBetween(const Point3d& point, const Plane& plane)
+{
+	const float normalNorm = plane.normal.GetNorm();
+	const float normalTimesPoint = plane.normal.ScalarProduct(point);
+	const float D = -plane.normal.ScalarProduct(plane.origin);
+	const float distance = std::abs(normalTimesPoint + D) / normalNorm;
+
+	return distance;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+Intersection IntersectLineWithLine(const Line& line1, const Line& line2)
+{
+	Intersection result;
+
+	const Vector3d dir1CrossDir2 = line1.direction.VectorProduct(line2.direction);
+	const float dir1CrossDir2NormSq = dir1CrossDir2.GetNormSq();
+
+	if (dir1CrossDir2NormSq < aleph0::epsilon)
+	{
+		return result;
+	}
+
+	const Vector3d origin2ToOrigin1 = line2.origin - line1.origin;
+	const Vector3d origin2toOrigin1CrossDir2 = origin2ToOrigin1.VectorProduct(line2.direction);
+	const float t = origin2toOrigin1CrossDir2.ScalarProduct(dir1CrossDir2) / dir1CrossDir2NormSq;
+
+	result.point = line1.origin + t * line1.direction;
+	result.exists = true;
+
+	return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 Intersection IntersectLineWithPlane(const Line& line, const Plane& plane)
 {
 	Intersection result;
