@@ -131,14 +131,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\aleph0.h" />
+    <ClInclude Include="include\algorithms.h" />
     <ClInclude Include="include\constants.h" />
     <ClInclude Include="include\matrix2x2.h" />
     <ClInclude Include="include\matrix3x3.h" />
     <ClInclude Include="include\matrix4x4.h" />
+    <ClInclude Include="include\primitives.h" />
     <ClInclude Include="include\vector2d.h" />
     <ClInclude Include="include\vector3d.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\algorithms.cpp" />
     <ClCompile Include="src\matrix2x2.cpp" />
     <ClCompile Include="src\matrix3x3.cpp" />
     <ClCompile Include="src\matrix4x4.cpp" />

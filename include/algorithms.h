@@ -1,0 +1,19 @@
+#pragma once
+
+#include "primitives.h"
+
+namespace aleph0
+{
+///////////////////////////////////////////////////////////////////////////////
+Intersection IntersectLineWithPlane(const Line& line, const Plane& plane);
+
+///////////////////////////////////////////////////////////////////////////////
+Intersection IntersectRayWithTriangle_Naive(const Line& line, const Triangle& plane);
+
+///////////////////////////////////////////////////////////////////////////////
+Intersection IntersectRayWithTriangle_MollerTrumbore(const Line& line, const Triangle& plane);
+
+///////////////////////////////////////////////////////////////////////////////
+Intersection IntersectRayWithTriangle_BaldinWeber(const Line& line, const Triangle& plane);
+
+} // namespace aleph0
