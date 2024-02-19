@@ -1,4 +1,5 @@
 // Standard C++ library headers
+#include <cassert>
 #include <iostream>
 #include <random>
 

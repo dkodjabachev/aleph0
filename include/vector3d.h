@@ -1,6 +1,5 @@
 #pragma once
 
-#include "aleph0.h"
 #include "vector2d.h"
 
 namespace aleph0

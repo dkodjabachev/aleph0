@@ -1,7 +1,5 @@
 #pragma once
 
-#include "aleph0.h"
-
 namespace aleph0
 {
 
