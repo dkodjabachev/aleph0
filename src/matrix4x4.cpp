@@ -3,6 +3,7 @@
 
 #include "matrix2x2.h"
 #include "matrix3x3.h"
+#include "vector3d.h"
 
 namespace aleph0
 {
@@ -190,6 +191,18 @@ Matrix4x4& Matrix4x4::operator*=(const Matrix4x4& other)
 	*this = NaiveMatrixProduct(*this, other);
 
 	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+Vector3d Matrix4x4::operator*(const Vector3d& vector)
+{
+	Vector3d result;
+
+	result(0) = m(0, 0) * vector(0) + m(0, 1) * vector(1) + m(0, 2) * vector(2) + m(0, 3);
+	result(1) = m(1, 0) * vector(0) + m(1, 1) * vector(1) + m(1, 2) * vector(2) + m(1, 3);
+	result(2) = m(2, 0) * vector(0) + m(2, 1) * vector(1) + m(2, 2) * vector(2) + m(2, 3);
+
+	return result;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
