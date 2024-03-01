@@ -387,7 +387,7 @@ void Matrix3x3::GetRotationAxisAngle(Vector3d& axis, float& theta) const
 	const float x = m(2, 1) - m(1, 2);
 	const float y = m(0, 2) - m(2, 0);
 	const float z = m(1, 0) - m(0, 1);
-	const float r = std::sqrtf(x * x + y * y + z * z);
+	const float r = std::sqrt(x * x + y * y + z * z);
 	const float trace = Trace();
 	
 	theta = std::atan2(r, trace - 1);

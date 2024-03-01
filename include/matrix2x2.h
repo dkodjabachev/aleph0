@@ -47,7 +47,7 @@ public:
 	Matrix2x2 operator+(const Matrix2x2& other) const;
 
 	///////////////////////////////////////////////////////////////////////////////
-	Matrix2x2 operator+=(const Matrix2x2& other);
+	Matrix2x2& operator+=(const Matrix2x2& other);
 
 	///////////////////////////////////////////////////////////////////////////////
 	Matrix2x2 operator-(const Matrix2x2& other) const;

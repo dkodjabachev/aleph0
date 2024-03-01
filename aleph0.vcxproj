@@ -137,6 +137,7 @@
     <ClInclude Include="include\matrix3x3.h" />
     <ClInclude Include="include\matrix4x4.h" />
     <ClInclude Include="include\primitives.h" />
+    <ClInclude Include="include\quaternion.h" />
     <ClInclude Include="include\vector2d.h" />
     <ClInclude Include="include\vector3d.h" />
   </ItemGroup>
@@ -145,6 +146,7 @@
     <ClCompile Include="src\matrix2x2.cpp" />
     <ClCompile Include="src\matrix3x3.cpp" />
     <ClCompile Include="src\matrix4x4.cpp" />
+    <ClCompile Include="src\quaternion.cpp" />
     <ClCompile Include="src\sandbox.cpp" />
     <ClCompile Include="src\vector2d.cpp" />
     <ClCompile Include="src\vector3d.cpp" />
